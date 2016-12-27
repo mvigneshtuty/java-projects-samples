@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-ws="http://www.springframework.org/schema/integration/ws"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration/ws http://www.springframework.org/schema/integration/ws/spring-integration-ws-4.1.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<import resource="price_services_config.xml" />
+
+	<int-ws:inbound-gateway id="productprice-wsgateway"
+		request-channel="productPriceInput" unmarshaller="productpriceRequestMarshaller"
+		reply-channel="productPriceOutput" marshaller="productpriceResponseMarshaller" />
+
+	<int:channel id="productPriceInput" />
+	<int:service-activator ref="productPriceHandler"
+		method="handleProductPriceRequest" input-channel="productPriceInput" />
+
+	<int:channel id="productPriceOutput" />
+
+	<int:channel id="pcatalogRequest" />
+
+	<int:transformer id="pcatalogRequestTransformer"
+		input-channel="pcatalogRequest" ref="productPriceHandler" output-channel="pcatalogTransformRequest" />
+
+	<int:channel id="pcatalogTransformRequest"/>
+
+	<int-ws:header-enricher input-channel="pcatalogTransformRequest"
+		output-channel="pcatalogSoapRequest">
+		<int-ws:soap-action value="http://org.nfjs/springws/pcatalog/getProduct" />
+	</int-ws:header-enricher>
+
+	<int:channel id="pcatalogSoapRequest" />
+
+	<int-ws:outbound-gateway uri="${pcatalog.uri}"
+		request-channel="pcatalogSoapRequest" reply-channel="pcatalogResponse"
+		requires-reply="true" message-sender="pcatalogRequestMessageSender">
+	</int-ws:outbound-gateway>
+
+	<int:channel id="pcatalogResponse" />
+
+	<int:service-activator ref="productPriceHandler"
+		method="handlePCatalogResponse" input-channel="pcatalogResponse" />
+
+
+</beans>

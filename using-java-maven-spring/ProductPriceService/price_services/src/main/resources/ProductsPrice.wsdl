@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:productpricerequest="http://org.nfjs/springws/productprice/request"
+	xmlns:productpriceresponse="http://org.nfjs/springws/productprice/response"
+	xmlns:productprice="http://org.nfjs/springws/productprice/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" name="productprice"
+	targetNamespace="http://org.nfjs/springws/productprice/">
+	<types>
+		<xs:schema>
+			<xs:import namespace="http://org.nfjs/springws/productprice/request"
+				schemaLocation="xsd/productpricerequest.xsd" />
+			<xs:import namespace="http://org.nfjs/springws/productprice/response"
+				schemaLocation="xsd/productpriceresponse.xsd" />
+		</xs:schema>
+	</types>
+
+	<message name="GetProductPriceRequestMsg">
+		<part name="GetProductPriceRequestMsg" element="productpricerequest:GetProductPriceRequest" />
+	</message>
+	<message name="GetProductPriceResponseMsg">
+		<part name="GetProductPriceResponseMsg" element="productpriceresponse:GetProductPriceResponse" />
+	</message>
+
+	<portType name="ProductPricePortType">
+		<operation name="getProductPrice">
+			<input message="productprice:GetProductPriceRequestMsg" />
+			<output message="productprice:GetProductPriceResponseMsg" />
+		</operation>
+	</portType>
+
+	<binding name="ProductPriceSOAPBinding" type="productprice:ProductPricePortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getProductPrice">
+			<soap:operation
+				soapAction="http://org.nfjs/springws/productprice/getProductPrice"
+				style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="ProductPriceService">
+		<port name="ProductPricePort" binding="productprice:ProductPriceSOAPBinding">
+			<soap:address
+				location="http://localhost/product-price-services/org/nfjs/springws/productprice" />
+		</port>
+	</service>
+</definitions>

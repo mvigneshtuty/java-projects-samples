@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:pcatalogrequest="http://org.nfjs/springws/pcatalog/request"
+	xmlns:pcatalogresponse="http://org.nfjs/springws/pcatalog/response"
+	xmlns:pcatalog="http://org.nfjs/springws/pcatalog/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" name="pcatalog"
+	targetNamespace="http://org.nfjs/springws/pcatalog/">
+	<types>
+		<xs:schema>
+			<xs:import namespace="http://org.nfjs/springws/pcatalog/request"
+				schemaLocation="xsd/pcatalogrequest.xsd" />
+			<xs:import namespace="http://org.nfjs/springws/pcatalog/response"
+				schemaLocation="xsd/pcatalogresponse.xsd" />
+		</xs:schema>
+	</types>
+
+	<message name="GetProductRequestMsg">
+		<part name="GetProductRequestMsg" element="pcatalogrequest:GetProductRequest" />
+	</message>
+	<message name="GetProductResponseMsg">
+		<part name="GetProductResponseMsg" element="pcatalogresponse:GetProductResponse" />
+	</message>
+
+	<message name="AddProductRequestMsg">
+		<part name="AddProductRequestMsg" element="pcatalogrequest:AddProductRequest" />
+	</message>
+	<message name="AddProductResponseMsg">
+		<part name="AddProductResponseMsg" element="pcatalogresponse:AddProductResponse" />
+	</message>
+
+	<message name="DeleteProductRequestMsg">
+		<part name="DeleteProductRequestMsg" element="pcatalogrequest:DeleteProductRequest" />
+	</message>
+	<message name="DeleteProductResponseMsg">
+		<part name="DeleteProductResponseMsg" element="pcatalogresponse:DeleteProductResponse" />
+	</message>
+
+	<portType name="ProductCatalogPortType">
+		<operation name="getProduct">
+			<input message="pcatalog:GetProductRequestMsg" />
+			<output message="pcatalog:GetProductResponseMsg" />
+		</operation>
+		<operation name="addProduct">
+			<input message="pcatalog:AddProductRequestMsg" />
+			<output message="pcatalog:AddProductResponseMsg" />
+		</operation>
+		<operation name="deleteProduct">
+			<input message="pcatalog:DeleteProductRequestMsg" />
+			<output message="pcatalog:DeleteProductResponseMsg" />
+		</operation>
+	</portType>
+
+	<binding name="ProductCatalogSOAPBinding" type="pcatalog:ProductCatalogPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getProduct">
+			<soap:operation soapAction="http://org.nfjs/springws/pcatalog/getProduct"
+				style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="addProduct">
+			<soap:operation soapAction="http://org.nfjs/springws/pcatalog/addProduct"
+				style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="deleteProduct">
+			<soap:operation soapAction="http://org.nfjs/springws/pcatalog/deleteProduct"
+				style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="ProductCatalogService">
+		<port name="ProductCatalogPort" binding="pcatalog:ProductCatalogSOAPBinding">
+			<soap:address
+				location="http://localhost/inboundws-pcatalog-adapter/org/nfjs/springws/productcatalog" />
+		</port>
+	</service>
+</definitions>

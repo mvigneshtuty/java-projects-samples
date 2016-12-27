@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://org.nfjs/springws/pcatalog/request" targetNamespace="http://org.nfjs/springws/pcatalog/request">
+
+	<xs:element name="GetProductRequest" type="GetProductRequestType" />
+	<xs:element name="AddProductRequest" type="AddProductRequestType" />
+	<xs:element name="DeleteProductRequest" type="DeleteProductRequestType" />
+
+	<!-- Get Product Request -->
+
+	<xs:complexType name="GetProductRequestType">
+		<xs:sequence>
+			<xs:element name="ProductCategory" type="ProductCategoryType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Add Product Request -->
+
+	<xs:complexType name="AddProductRequestType">
+		<xs:sequence>
+			<xs:element name="Product" type="ProductsType" />
+			<xs:element name="ProductCategory" type="ProductCategoryType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Delete Product Request -->
+
+	<xs:complexType name="DeleteProductRequestType">
+		<xs:sequence>
+			<xs:element name="Product" type="ProductsType" />
+			<xs:element name="ProductCategory" type="ProductCategoryType"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- common -->
+	<xs:simpleType name="ProductCategoryType">
+		<xs:annotation>
+			<xs:documentation>Category of product</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30" />
+			<xs:pattern value="[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProductsType">
+		<xs:annotation>
+			<xs:documentation>Products Name</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50" />
+			<xs:pattern value="[a-zA-Z0-9\s]*[a-zA-Z0-9][a-zA-Z0-9\s]*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

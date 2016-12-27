@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://org.nfjs/springws/pcatalog/response" targetNamespace="http://org.nfjs/springws/pcatalog/response">
+
+	<xs:element name="GetProductResponse" type="GetProductResponseType" />
+	<xs:element name="AddProductResponse" type="AddProductResponseType" />
+	<xs:element name="DeleteProductResponse" type="DeleteProductResponseType" />
+	<xs:element name="DefaultResponse" type="DefaultResponseType" />
+
+	<!-- Get Product Response -->
+	<xs:complexType name="GetProductResponseType">
+		<xs:sequence>
+			<xs:element name="ProductCategory" type="ProductCategoryType" />
+			<xs:element name="ProductsList" type="ProductsListType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Add Product Response -->
+	<xs:complexType name="AddProductResponseType">
+		<xs:sequence>
+			<xs:element name="Product" type="ProductsType" />
+			<xs:element name="ProductCategory" type="ProductCategoryType" />
+			<xs:element name="StatusMessage" type="StatusMessageType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Delete Product Response -->
+
+	<xs:complexType name="DeleteProductResponseType">
+		<xs:sequence>
+			<xs:element name="Product" type="ProductsType" />
+			<xs:element name="StatusMessage" type="StatusMessageType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="DefaultResponseType">
+		<xs:sequence>
+			<xs:element name="StatusCode" type="xs:string" />
+			<xs:element name="StatusMessage" type="StatusMessageType"
+				default="Internal error occured" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- common -->
+	<xs:simpleType name="ProductCategoryType">
+		<xs:annotation>
+			<xs:documentation>Category of product</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30" />
+			<xs:pattern value="[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ProductsListType">
+		<xs:sequence>
+			<xs:element name="Products" type="ProductObjectType"
+				maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ProductObjectType">
+		<xs:sequence>
+			<xs:element name="ProductName" type="ProductsType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="ProductsType">
+		<xs:annotation>
+			<xs:documentation>Products Name</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50" />
+			<xs:pattern value="[a-zA-Z0-9\s]*[a-zA-Z0-9][a-zA-Z0-9\s]*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="StatusMessageType">
+		<xs:annotation>
+			<xs:documentation>Response status message of add and delete products
+				request
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>
