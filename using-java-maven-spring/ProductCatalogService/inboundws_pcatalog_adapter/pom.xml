@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- parent coordinates -->
+	<parent>
+		<groupId>org.nfjs.inbound.ws</groupId>
+		<artifactId>product_catalog_service</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<!-- project coordinates -->
+	<groupId>org.nfjs.inbound.ws.adapter</groupId>
+	<artifactId>inboundws-pcatalog-adapter</artifactId>
+	<version>1.0</version>
+	<packaging>war</packaging>
+	<!-- project dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>org.nfjs.inbound.ws.core</groupId>
+			<artifactId>inboundws-pcatalog-core</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>4.3.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>4.3.2.RELEASE</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>inboundws</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1-alpha-2</version>
+				<configuration>
+					<warSourceDirectory>WebContent</warSourceDirectory>
+					<warSourceExcludes>WEB-INF/lib/*.jar,**/*.htm,**/*.exe</warSourceExcludes>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+						<manifestEntries>
+							<version>${pom.version}</version>
+							<module>${pom.artifactId}</module>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
