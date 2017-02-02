@@ -1,0 +1,4 @@
+org\nfjs\springbatch\main\SpringBatchAppMain.class
+org\nfjs\springbatch\mapper\ProductsFieldSetMapper.class
+org\nfjs\springbatch\domain\Product.class
+org\nfjs\springbatch\writer\ProductJdbcItemWriter.class
