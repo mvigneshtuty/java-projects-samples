@@ -1,0 +1,5 @@
+org\nfjs\batch\neft\domain\NeftRecordData.class
+org\nfjs\batch\neft\main\NeftMain.class
+org\nfjs\batch\neft\inbound\NeftInboundService.class
+org\nfjs\batch\neft\readchunks\NeftRequestLineMapper.class
+org\nfjs\batch\neft\listener\NeftJobListener.class

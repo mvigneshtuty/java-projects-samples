@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-file="http://www.springframework.org/schema/integration/file"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/integration
+    http://www.springframework.org/schema/integration/spring-integration-2.2.xsd
+    http://www.springframework.org/schema/integration/file
+    http://www.springframework.org/schema/integration/file/spring-integration-file-2.2.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<context:annotation-config />
+	<!-- <util:properties id="neft_prop" location="file:D:\\353453\\programming_workspace\\spring_workspace\\NeftBatch\\src\\main\\resources\\neft_config.properties" 
+		/> -->
+
+	<bean id="neft_prop"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+		<property name="location"
+			value="file:D:\\353453\\programming_workspace\\spring_workspace\\NeftBatch\\src\\main\\resources\\neft_config.properties" />
+
+	</bean>
+
+	<int:poller default="true" fixed-rate="${neft.integration.poller}"
+		max-messages-per-poll="${neft.integration.maxmessage}"></int:poller>
+
+	<!-- <int:poller default="false" max-messages-per-poll="${neft.integration.maxmessage}"> 
+		<int:interval-trigger interval="100" /> </int:poller> -->
+
+
+	<int-file:inbound-channel-adapter id="neft_inbound_adapter"
+		directory="D:\\353453\\learning\\spring_batch\\neft\\inbound"
+		filename-pattern="*inbound*" channel="neft_inbound_requests">
+	</int-file:inbound-channel-adapter>
+
+
+	<int:channel id="neft_inbound_requests" />
+
+	<int:service-activator id="neft_inbound_jobLauncher"
+		input-channel="neft_inbound_requests" ref="neft_inbound_service"></int:service-activator>
+
+
+	<bean id="neft_inbound_service" class="org.nfjs.batch.neft.inbound.NeftInboundService"></bean>
+</beans>

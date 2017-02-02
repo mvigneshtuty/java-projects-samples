@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+	http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+<import resource="classpath:neft_batch_adapter.xml" />
+
+	<batch:job id="neftJob">
+		<batch:flow parent="neftBatchFlow" id="neft_job.neftBatchFlow"></batch:flow>
+		<batch:listeners>
+			<batch:listener ref="neftJobListener" />
+		</batch:listeners>
+	</batch:job>
+
+	<batch:flow id="neftBatchFlow">
+		<batch:step id="neftRequestHandling">
+			<batch:tasklet>
+				<batch:chunk reader="neftRequestReader" writer="defaultWriter"
+					commit-interval="5"></batch:chunk>
+			</batch:tasklet>
+		</batch:step>
+	</batch:flow>
+
+
+	<!-- Bean registrations -->
+	<!-- Reader -->
+	<bean id="neftRequestReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+		<property name="resource"
+			value="file:///#{jobParameters['neft.input.filepath']}" />
+		<property name="lineMapper" ref="neftReqLineMapperRef"></property>
+	</bean>
+	<!-- Reader :: LineMapper -->
+	<bean id="neftReqLineMapperRef" class="org.nfjs.batch.neft.readchunks.NeftRequestLineMapper">
+		<property name="neftRecordTokenizer" ref="neftRecordLineTokenizerRef"></property>
+		<property name="neftFieldSetMapper" ref="neftFieldSetMapperRef"></property>
+	</bean>
+
+	<!-- Reader :: LineMapper :: Tokenizer -->
+
+	<bean id="neftRecordLineTokenizerRef"
+		class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+		<property name="delimiter" value=";"></property>
+	</bean>
+
+	<bean id="defaultWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
+		<property name="lineAggregator" ref="dataLineAggregator" />
+		<property name="resource" value="file:///#{jobParameters['neft.output.filepath']}" />
+		<property name="shouldDeleteIfExists" value="true" />
+	</bean>
+	<!-- <bean id="jdbcItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter"></bean> -->
+	<!-- Job Launcher -->
+
+	<bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository"></property>
+	</bean>
+
+	<bean id="jobRepository"
+		class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+		<property name="databaseType" value="H2"></property>
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="transactionManager" ref="transactionManager"></property>
+	</bean>
+
+	<jdbc:embedded-database id="dataSource" type="H2">
+		<jdbc:script location="org/springframework/batch/core/schema-h2.sql" />
+	</jdbc:embedded-database>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+
+	<bean id="neftData" class="org.nfjs.batch.neft.domain.NeftRecordData"
+		scope="prototype" />
+
+	<bean id="neftFieldSetMapperRef"
+		class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+		<property name="prototypeBeanName" value="neftData" />
+	</bean>
+
+	<bean id="dataLineAggregator"
+		class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+		<property name="delimiter" value=";" />
+		<property name="fieldExtractor">
+			<bean
+				class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+				<property name="names" value="customerId,customerName,debitAmount" />
+			</bean>
+		</property>
+	</bean>
+</beans>
